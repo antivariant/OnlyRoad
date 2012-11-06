@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.Menu;
+import com.gromsoft.onlyroad.R;
 
 
 public class SettingsActivity extends SherlockPreferenceActivity {

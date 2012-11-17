@@ -2,12 +2,12 @@
 
     <string name="app_name">Only Road</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">OnlyRoad</string>
     <string name="menu_dvr">Карта</string>
     <string name="menu_phone">Тел.</string>
     <string name="menu_videos">Записи</string>
-    <string name="title_activity_map">MapActivity</string>
-    <string name="title_activity_nav">NavActivity</string>
+    <string name="title_activity_map">Карта</string>
+    <string name="title_activity_nav">Навигация</string>
     <string name="map_key">0sCawzC3roCRv6O535S8v0UN2h3Smq56HJGHz4w</string>
     <!-- Preferences -->
     <string name="pref_map_vid">Тип карты</string>

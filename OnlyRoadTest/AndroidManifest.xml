@@ -8,7 +8,7 @@
     android:targetSdkVersion="16"/>
     
     <instrumentation
-        android:name="android.test.InstrumentationTestRunner"
+        android:name="pl.polidea.instrumentation.PolideaInstrumentationTestRunner"
         android:targetPackage="com.gromsoft.onlyroad" />
     <application
         android:icon="@drawable/ic_launcher"

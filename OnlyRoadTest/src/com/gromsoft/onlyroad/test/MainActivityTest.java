@@ -1,28 +1,35 @@
 package com.gromsoft.onlyroad.test;
 
+import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.gromsoft.onlyroad.MainActivity;
 
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
 	MainActivity mMainActivity;
+	Instrumentation mInstrumentation; 
+	com.actionbarsherlock.app.ActionBar mActionBar;
 	
 	public MainActivityTest(String name) {
 		super(MainActivity.class);
 	}
 
 	public MainActivityTest(){
-		this("My First Project Test");
+		this("Only Road MainActivity Tests");
 	}
 	
 	protected void setUp() throws Exception {
 		
 		super.setUp();
 
+		setActivityInitialTouchMode(false);
 		mMainActivity = getActivity();
+		mInstrumentation = getInstrumentation();
+		mActionBar = mMainActivity.getSupportActionBar();
 	}
 
 	protected void tearDown() throws Exception {
@@ -30,8 +37,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	}
 
 	@SmallTest
-	public void testSomething(){
-		fail("Not implemented yet");
+	public void testActionBarNavigationMode(){
+		assertEquals("Табы должны быть в ряд", ActionBar.NAVIGATION_MODE_TABS, mActionBar.getNavigationMode());
 	}
 	
 }

@@ -19,6 +19,8 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -36,81 +38,86 @@ import com.google.android.maps.OverlayItem;
 
 
 public class MainActivity extends SherlockMapActivity implements TabListener, LocationListener, OnPageChangeListener {
-	MapController cMapController;
-	MapView cMapView;
-	ViewPager cViewPager;
-	com.actionbarsherlock.app.ActionBar cActionBar;
-	LocationManager cLocationManager;
+	MapController mMapController;
+	MapView mMapView;
+	ViewPager mViewPager;
+	com.actionbarsherlock.app.ActionBar mActionBar;
+	LocationManager mLocationManager;
 	List<Overlay> mapOverlays;
 	Drawable startLocationMarker;
-	RouteOverlay itemizedOverlay = null;
+	RouteOverlay mRouteOverlay = null;
 	int latitude, longtitude;
 	GeoPoint myLocationGp;
-	MyLocationOverlay myLocationOverlay;
-	Context context;
-
+	MyLocationOverlay mMyLocationOverlay;
+	Context mContext;
+	
+	
 	final static String LOG = "MyLog";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//Не выключать экран
+		Window w=this.getWindow();
+		w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			
 		//---------------- Swipe ------------------------------------------- 
 		LayoutInflater inflater = LayoutInflater.from(this);
 		final View pageMap = (MapView) inflater.inflate(R.layout.layout_map, null);
 		final View pagePhone = inflater.inflate(R.layout.layout_phone, null);
 		final View pageVideo = inflater.inflate(R.layout.layout_video, null);
-		context = this;
+		mContext = this;
 
 		List<View> pages = new ArrayList<View>();
 		pages.add(pageMap);
 		pages.add(pagePhone);
 		pages.add(pageVideo);
 
-		MyPagerAdapter pagerAdapter = new MyPagerAdapter(pages);
-		cViewPager = new ViewPager(this);
-		cViewPager.setAdapter(pagerAdapter);
-		cViewPager.setCurrentItem(0);
-		cViewPager.setOffscreenPageLimit(3); // MapView это тоже типа группа, чтобы он внутри не искал????
-		setContentView(cViewPager);
-		cViewPager.setOnPageChangeListener(this);
+		final MyPagerAdapter mMyPagerAdapter = new MyPagerAdapter(pages);
+		mViewPager = new ViewPager(this);
+		mViewPager.setAdapter(mMyPagerAdapter);
+		mViewPager.setCurrentItem(0);
+		mViewPager.setOffscreenPageLimit(3); // MapView это тоже типа группа, чтобы он внутри не искал????
+		setContentView(mViewPager);
+		mViewPager.setOnPageChangeListener(this);
 
 		// --------------- Карта ----------------------------------------------------
-		cMapView = (MapView) pageMap.findViewById(R.id.map); // искать View нужно в pageMap
-		cMapController = cMapView.getController();
+		mMapView = (MapView) pageMap.findViewById(R.id.map); // искать View нужно в pageMap
+		mMapController = mMapView.getController();
 
-		cLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-		cLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-		mapOverlays = cMapView.getOverlays();// Получить слои, привязанные к карте
+		mapOverlays = mMapView.getOverlays();// Получить слои, привязанные к карте
 
-		myLocationOverlay = new MyLocationOverlay(this, cMapView);
-		myLocationOverlay.enableMyLocation();
-		myLocationOverlay.disableCompass();
-		mapOverlays.add(myLocationOverlay);
+		mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+		mMyLocationOverlay.enableMyLocation();
+		mMyLocationOverlay.disableCompass();
+		mapOverlays.add(mMyLocationOverlay);
 
-		myLocationOverlay.runOnFirstFix(new Runnable() {
+		mMyLocationOverlay.runOnFirstFix(new Runnable() {
 			@Override
 			public void run() {
-				cMapController.animateTo(myLocationOverlay.getMyLocation());
+				mMapController.animateTo(mMyLocationOverlay.getMyLocation());
 				
 			}
 		});
 
-		cMapController.setZoom(cMapView.getMaxZoomLevel());
+		mMapController.setZoom(mMapView.getMaxZoomLevel());
 
 		// ---------------- ActionBar ----------------------------------
-		cActionBar = getSupportActionBar();
-		cActionBar.setDisplayHomeAsUpEnabled(true);// Иконка приложения для перехода назад
-		cActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);// Закладки
-		cActionBar.setDisplayShowTitleEnabled(false);// Не показывать название приложения рядом с иконкой
+		mActionBar = getSupportActionBar();
+		mActionBar.setDisplayHomeAsUpEnabled(true);// Иконка приложения для перехода назад
+		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);// Закладки
+		mActionBar.setDisplayShowTitleEnabled(false);// Не показывать название приложения рядом с иконкой
 
-		Tab tab = cActionBar.newTab().setText(R.string.menu_dvr).setTabListener(this);
-		cActionBar.addTab(tab);
-		tab = cActionBar.newTab().setText(R.string.menu_phone).setTabListener(this);
-		cActionBar.addTab(tab);
-		tab = cActionBar.newTab().setText(R.string.menu_videos).setTabListener(this);
-		cActionBar.addTab(tab);
+		Tab tab = mActionBar.newTab().setText(R.string.menu_dvr).setTabListener(this);
+		mActionBar.addTab(tab);
+		tab = mActionBar.newTab().setText(R.string.menu_phone).setTabListener(this);
+		mActionBar.addTab(tab);
+		tab = mActionBar.newTab().setText(R.string.menu_videos).setTabListener(this);
+		mActionBar.addTab(tab);
 
 	}
 
@@ -120,8 +127,8 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	@Override
 	protected void onPause() {
 		// TODO Непонятно, мне ведь не нужно останавливать запись, ну чтобы в фоне тоже записывало
-		cLocationManager.removeUpdates(this);
-		myLocationOverlay.disableMyLocation();
+		mLocationManager.removeUpdates(this);
+		mMyLocationOverlay.disableMyLocation();
 		super.onPause();
 	}
 
@@ -131,10 +138,10 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String regular = prefs.getString("pref_map_vid_key", getString(R.string.pref_map_vid_default));
 		if (regular.contains("Спутник"))
-			cMapView.setSatellite(true);
+			mMapView.setSatellite(true);
 		else
-			cMapView.setSatellite(false);
-		myLocationOverlay.enableMyLocation();
+			mMapView.setSatellite(false);
+		mMyLocationOverlay.enableMyLocation();
 
 	}
 
@@ -159,14 +166,14 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 			if (item.isChecked()) {
 				item.setChecked(false);
 				item.setIcon(R.drawable.record_on);
-				itemizedOverlay.setRecording(false);
+				mRouteOverlay.setRecording(false);
 
 				return true;
 			} else {
 				item.setChecked(true);
 				item.setIcon(R.drawable.record_off);
-				itemizedOverlay.clearItems();
-				itemizedOverlay.setRecording(true);
+				mRouteOverlay.clearItems();
+				mRouteOverlay.setRecording(true);
 				return true;
 			}
 		case (R.id.speaker):
@@ -205,19 +212,19 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		Log.d(LOG, "Page=" + String.valueOf(tab.getPosition()));
-		cViewPager.setCurrentItem(tab.getPosition());
+		mViewPager.setCurrentItem(tab.getPosition());
 		if (tab.getPosition() == 0) {
-			myLocationOverlay.enableMyLocation();
-			cMapView.postInvalidate();
+			mMyLocationOverlay.enableMyLocation();
+			mMapView.postInvalidate();
 		} else
-			myLocationOverlay.disableMyLocation();
+			mMyLocationOverlay.disableMyLocation();
 
 	}
 
 	@Override
 	public void onPageSelected(int position) {
 
-		cActionBar.setSelectedNavigationItem(position);
+		mActionBar.setSelectedNavigationItem(position);
 
 	}
 
@@ -250,14 +257,14 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		GeoPoint lastLocation = new GeoPoint(latitude, longtitude);
 
-		if (itemizedOverlay == null) {
-			itemizedOverlay = new RouteOverlay(getResources().getDrawable(R.drawable.location), Color.BLUE);
-			mapOverlays.add(itemizedOverlay);
+		if (mRouteOverlay == null) {
+			mRouteOverlay = new RouteOverlay(getResources().getDrawable(R.drawable.location), Color.BLUE);
+			mapOverlays.add(mRouteOverlay);
 		}
 
 		OverlayItem cOverlayItem = new OverlayItem(lastLocation, "", "");// Добавляем следующую точку
-		itemizedOverlay.addOverlay(cOverlayItem);// Добавить ее к слою
-		cMapView.postInvalidate();
+		mRouteOverlay.addOverlay(cOverlayItem);// Добавить ее к слою
+		mMapView.postInvalidate();
 
 	}
 

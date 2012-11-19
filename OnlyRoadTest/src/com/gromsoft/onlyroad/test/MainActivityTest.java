@@ -1,15 +1,17 @@
 package com.gromsoft.onlyroad.test;
 
-import junit.framework.TestCase;
+import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.gromsoft.onlyroad.MainActivity;
 
 
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
-public class MainActivityTest extends TestCase {
-
+	MainActivity mMainActivity;
+	
 	public MainActivityTest(String name) {
-		super(name);
+		super(MainActivity.class);
 	}
 
 	public MainActivityTest(){
@@ -17,8 +19,10 @@ public class MainActivityTest extends TestCase {
 	}
 	
 	protected void setUp() throws Exception {
+		
 		super.setUp();
 
+		mMainActivity = getActivity();
 	}
 
 	protected void tearDown() throws Exception {

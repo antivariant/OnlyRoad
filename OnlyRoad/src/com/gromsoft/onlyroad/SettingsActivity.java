@@ -11,6 +11,7 @@ import com.gromsoft.onlyroad.R;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 
+@SuppressWarnings("deprecation")
 @Override
 protected void onCreate(Bundle savedInstanceState) {
 	setTheme(R.style.AppTheme);

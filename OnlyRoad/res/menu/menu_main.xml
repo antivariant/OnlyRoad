@@ -4,17 +4,17 @@
         <item
             android:id="@+id/record"
             android:checkable="true"
-            android:icon="@drawable/record_on"
+            android:icon="@drawable/record_off"
             android:showAsAction="always"/>
         <item
             android:id="@+id/speaker"
             android:checkable="true"
-            android:icon="@drawable/speaker_on"
+            android:icon="@drawable/speaker_off"
             android:showAsAction="always"/>
         <item
             android:id="@+id/autoanswer"
             android:checkable="true"
-            android:icon="@drawable/autoanswer_on"
+            android:icon="@drawable/autoanswer_off"
             android:showAsAction="always"/>
         <item
             android:id="@+id/settings_menuitem"

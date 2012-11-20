@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -36,7 +37,6 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-
 public class MainActivity extends SherlockMapActivity implements TabListener, LocationListener, OnPageChangeListener {
 	MapController mMapController;
 	MapView mMapView;
@@ -50,24 +50,30 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	GeoPoint myLocationGp;
 	MyLocationOverlay mMyLocationOverlay;
 	Context mContext;
-	
-	
+	AudioManager mAudioManager;
+	boolean isPhoneSpeakerOn;
+	public Menu mMenu; // TODO public для теста, не могу никак по-другому получить. Может быть роботиумом isToggleButtonChecked или тест положить в тот же пакет?
+
 	final static String LOG = "MyLog";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//Не выключать экран
-		Window w=this.getWindow();
+		mContext = this;
+
+		// Громкая связь
+		mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+
+		// Не выключать экран
+		Window w = this.getWindow();
 		w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-			
-		//---------------- Swipe ------------------------------------------- 
+
+		// ---------------- Swipe -------------------------------------------
 		LayoutInflater inflater = LayoutInflater.from(this);
 		final View pageMap = (MapView) inflater.inflate(R.layout.layout_map, null);
 		final View pagePhone = inflater.inflate(R.layout.layout_phone, null);
 		final View pageVideo = inflater.inflate(R.layout.layout_video, null);
-		mContext = this;
 
 		List<View> pages = new ArrayList<View>();
 		pages.add(pageMap);
@@ -100,7 +106,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 			@Override
 			public void run() {
 				mMapController.animateTo(mMyLocationOverlay.getMyLocation());
-				
+
 			}
 		});
 
@@ -121,20 +127,24 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	}
 
-//============================== Конец onCreate =====================================================	
-	
+	// ============================== Конец onCreate =====================================================
+
 	// -------- Жизненный цикл --------------------------------------
 	@Override
 	protected void onPause() {
 		// TODO Непонятно, мне ведь не нужно останавливать запись, ну чтобы в фоне тоже записывало
 		mLocationManager.removeUpdates(this);
 		mMyLocationOverlay.disableMyLocation();
+		SaveSettings();
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		RestoreSettings();
+		
+		//А где сохранение? Списал? Ха-ха-ха!!!!!
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String regular = prefs.getString("pref_map_vid_key", getString(R.string.pref_map_vid_default));
 		if (regular.contains("Спутник"))
@@ -145,17 +155,48 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	}
 
-	
-	
-	
-//============================ @Overrides ====================================================
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		SaveSettings();
+	}
 
-	
-	//----------------- Action Bar ------------------------------------------
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		RestoreSettings();
+	}
+
+	private void SaveSettings() {
+		SharedPreferences settings = this.getPreferences(0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putBoolean("SpeakerPhone", mAudioManager.isSpeakerphoneOn());
+		editor.commit();
+		
+		
+	}
+
+	private void RestoreSettings() {
+		SharedPreferences settings = this.getPreferences(0);
+		isPhoneSpeakerOn = settings.getBoolean("SpeakerPhone",false);
+	}
+
+	// ============================ @Overrides ====================================================
+
+	// ----------------- Action Bar ------------------------------------------
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater(); // getSupport.. важно для Sherlock
 		inflater.inflate(R.menu.menu_main, menu);
+		mMenu = menu;
+		MenuItem speakerMenu = mMenu.findItem(R.id.speaker);
+		speakerMenu.setChecked(isPhoneSpeakerOn);
+		// Обновить иконку
+		if (isPhoneSpeakerOn)
+			speakerMenu.setIcon(R.drawable.speaker_on);
+		else
+			speakerMenu.setIcon(R.drawable.speaker_off);
+
 		return true;
 	}
 
@@ -167,7 +208,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 				item.setChecked(false);
 				item.setIcon(R.drawable.record_on);
 				mRouteOverlay.setRecording(false);
-
 				return true;
 			} else {
 				item.setChecked(true);
@@ -177,13 +217,14 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 				return true;
 			}
 		case (R.id.speaker):
+			mAudioManager.setSpeakerphoneOn(!item.isChecked());
 			if (item.isChecked()) {
 				item.setChecked(false);
-				item.setIcon(R.drawable.speaker_on);
+				item.setIcon(R.drawable.speaker_off);
 				return true;
 			} else {
 				item.setChecked(true);
-				item.setIcon(R.drawable.speaker_off);
+				item.setIcon(R.drawable.speaker_on);
 				return true;
 			}
 		case (R.id.autoanswer):
@@ -246,7 +287,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	}
 
-	
 	// ---------------------- Карта ------------------------
 	@Override
 	public void onLocationChanged(Location location) {
@@ -276,7 +316,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	public void onProviderEnabled(String provider) {
 	}
 
-
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 	}
@@ -286,10 +325,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		return false;
 	}
 
-	
-
-	//========================= Процедуры =================================================
-	
-	
+	// ========================= Процедуры =================================================
 
 }

@@ -51,6 +51,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	MyLocationOverlay mMyLocationOverlay;
 	Context mContext;
 	AudioManager mAudioManager;
+	boolean isSpeakerOn;
 	boolean isPhoneSpeakerOn;
 	public Menu mMenu; // TODO public для теста, не могу никак по-другому получить. Может быть роботиумом isToggleButtonChecked или тест положить в тот же пакет?
 
@@ -64,6 +65,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		// Громкая связь
 		mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		isPhoneSpeakerOn=mAudioManager.isSpeakerphoneOn();//Запомнить состояние до запуска
 
 		// Не выключать экран
 		Window w = this.getWindow();
@@ -141,7 +143,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	@Override
 	protected void onResume() {
-		super.onResume();
 		RestoreSettings();
 		
 		//А где сохранение? Списал? Ха-ха-ха!!!!!
@@ -152,8 +153,16 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		else
 			mMapView.setSatellite(false);
 		mMyLocationOverlay.enableMyLocation();
-
+		
+		super.onResume();
 	}
+	
+	@Override
+	protected void onStop(){
+		mAudioManager.setSpeakerphoneOn(isPhoneSpeakerOn);//Восстановить состояние до запуска
+		super.onStop();
+	}
+	
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -170,7 +179,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	private void SaveSettings() {
 		SharedPreferences settings = this.getPreferences(0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean("SpeakerPhone", mAudioManager.isSpeakerphoneOn());
+		editor.putBoolean("SpeakerPhone", isSpeakerOn);
 		editor.commit();
 		
 		
@@ -178,7 +187,8 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	private void RestoreSettings() {
 		SharedPreferences settings = this.getPreferences(0);
-		isPhoneSpeakerOn = settings.getBoolean("SpeakerPhone",false);
+		isSpeakerOn = settings.getBoolean("SpeakerPhone",false);
+		mAudioManager.setSpeakerphoneOn(isSpeakerOn);
 	}
 
 	// ============================ @Overrides ====================================================
@@ -190,9 +200,9 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		inflater.inflate(R.menu.menu_main, menu);
 		mMenu = menu;
 		MenuItem speakerMenu = mMenu.findItem(R.id.speaker);
-		speakerMenu.setChecked(isPhoneSpeakerOn);
+		speakerMenu.setChecked(isSpeakerOn);
 		// Обновить иконку
-		if (isPhoneSpeakerOn)
+		if (isSpeakerOn)
 			speakerMenu.setIcon(R.drawable.speaker_on);
 		else
 			speakerMenu.setIcon(R.drawable.speaker_off);

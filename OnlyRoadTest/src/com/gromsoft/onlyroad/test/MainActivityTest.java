@@ -27,6 +27,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	Bundle mBundle;
 	SharedPreferences settings;
 	MenuItem speakerMenuItem;
+	boolean isPhoneSpeakeOn;
 	
 	public MainActivityTest(String name) {
 		super(MainActivity.class);
@@ -39,7 +40,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	protected void setUp() throws Exception {
 
 		super.setUp();
-
 		setActivityInitialTouchMode(false);
 		mMainActivity = getActivity();
 		mInstrumentation = getInstrumentation();
@@ -64,13 +64,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	@LargeTest
 	public void testSpeakerphone() throws Exception {
 		//Проверка последнего значения
-		CheckSpeakerSavedState(speakerMenuItem);
+		CheckSpeakerSavedState(speakerMenuItem, "До перезагрузки");
 		mSolo.clickOnImageButton(1);//Вкл (или выкл)
 		mMainActivity.finish(); //Перезапускаем
 		this.tearDown();
-		mMainActivity=this.getActivity();
 		this.setUp();
-		CheckSpeakerSavedState(speakerMenuItem);//Еще раз проверяем
+		CheckSpeakerSavedState(speakerMenuItem, "После перезагрузки");//Еще раз проверяем
 		
 		
 		//Проверка включения/выключения
@@ -87,11 +86,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		assertEquals("Меню динамика " + String.valueOf(isChecked) + ", спикер ", isChecked, isSpeakerOn);
 	}
 
-	private void CheckSpeakerSavedState(MenuItem item){
+	private void CheckSpeakerSavedState(MenuItem item, String test){
 		boolean speaker_settings = settings.getBoolean("SpeakerPhone", false);
 		boolean speaker_menu = item.isChecked();
-		assertEquals("Сохранено значение динамика "+String.valueOf(speaker_settings) + ", меню ",speaker_settings,speaker_menu);
-
+		assertEquals(test+". Сохранено значение динамика "+String.valueOf(speaker_settings) + ", меню ",speaker_settings,speaker_menu);
+		boolean isSpeakerOn = mAudioManager.isSpeakerphoneOn();
+		assertEquals(test+". Сохраненное состояение и меню совпадает" + String.valueOf(speaker_settings) + " но спикер не в этом состоянии ", speaker_settings, isSpeakerOn);
 	}
 	
 

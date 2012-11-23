@@ -64,7 +64,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		mContext = this;
 
-		// Запомнить состояние динамика и громкости
+		// Запомнить состояние динамика и громкости  
 		mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		isDefaultSpeakerOn = mAudioManager.isSpeakerphoneOn();// Запомнить состояние до запуска
 		speakerDefaulValue = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);

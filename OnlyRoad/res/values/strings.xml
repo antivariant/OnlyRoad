@@ -13,5 +13,6 @@
     <string name="pref_map_vid">Тип карты</string>
 	<string name="pref_map_vid_sum">Выбор типа карты</string>
 	<string name="pref_map_vid_default">Схема</string>
-    <string name="pref_map_category">Настройка карты</string>
+	<string name="pref_gprs">Пакетные данные</string>
+	<string name="pref_gprs_sum">Включить пакетные данные</string>
 </resources>

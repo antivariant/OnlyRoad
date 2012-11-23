@@ -1082,7 +1082,8 @@ containing a value of this type.
         public static final int menu_phone=0x7f0a0013;
         public static final int menu_settings=0x7f0a0010;
         public static final int menu_videos=0x7f0a0014;
-        public static final int pref_map_category=0x7f0a001b;
+        public static final int pref_gprs=0x7f0a001b;
+        public static final int pref_gprs_sum=0x7f0a001c;
         /**  Preferences 
          */
         public static final int pref_map_vid=0x7f0a0018;

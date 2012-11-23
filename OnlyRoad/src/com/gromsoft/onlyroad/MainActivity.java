@@ -52,7 +52,8 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	Context mContext;
 	AudioManager mAudioManager;
 	boolean isSpeakerOn;
-	boolean isPhoneSpeakerOn;
+	boolean isDefaultSpeakerOn;
+	int speakerDefaulValue;
 	public Menu mMenu; // TODO public для теста, не могу никак по-другому получить. Может быть роботиумом isToggleButtonChecked или тест положить в тот же пакет?
 
 	final static String LOG = "MyLog";
@@ -63,10 +64,11 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		mContext = this;
 
-		// Громкая связь
+		// Запомнить состояние динамика и громкости
 		mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-		isPhoneSpeakerOn=mAudioManager.isSpeakerphoneOn();//Запомнить состояние до запуска
-
+		isDefaultSpeakerOn = mAudioManager.isSpeakerphoneOn();// Запомнить состояние до запуска
+		speakerDefaulValue = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		
 		// Не выключать экран
 		Window w = this.getWindow();
 		w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -112,8 +114,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 			}
 		});
 
-		mMapController.setZoom(mMapView.getMaxZoomLevel());
-
 		// ---------------- ActionBar ----------------------------------
 		mActionBar = getSupportActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);// Иконка приложения для перехода назад
@@ -137,58 +137,51 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		// TODO Непонятно, мне ведь не нужно останавливать запись, ну чтобы в фоне тоже записывало
 		mLocationManager.removeUpdates(this);
 		mMyLocationOverlay.disableMyLocation();
+
 		SaveSettings();
+
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
+
 		RestoreSettings();
-		
-		//А где сохранение? Списал? Ха-ха-ха!!!!!
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		String regular = prefs.getString("pref_map_vid_key", getString(R.string.pref_map_vid_default));
-		if (regular.contains("Спутник"))
-			mMapView.setSatellite(true);
-		else
-			mMapView.setSatellite(false);
+
 		mMyLocationOverlay.enableMyLocation();
-		
+
 		super.onResume();
 	}
-	
-	@Override
-	protected void onStop(){
-		mAudioManager.setSpeakerphoneOn(isPhoneSpeakerOn);//Восстановить состояние до запуска
-		super.onStop();
-	}
-	
 
 	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		super.onSaveInstanceState(savedInstanceState);
-		SaveSettings();
-	}
+	protected void onDestroy() {
+		// Восстановить состояние динамика и громкости до запуска
+		mAudioManager.setSpeakerphoneOn(isDefaultSpeakerOn);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, speakerDefaulValue, 0);
+		super.onDestroy();
 
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		RestoreSettings();
 	}
 
 	private void SaveSettings() {
 		SharedPreferences settings = this.getPreferences(0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("SpeakerPhone", isSpeakerOn);
+		editor.putInt("Zoom", mMapView.getZoomLevel());
+		editor.putInt("Volume", mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
 		editor.commit();
-		
-		
+
 	}
 
 	private void RestoreSettings() {
 		SharedPreferences settings = this.getPreferences(0);
-		isSpeakerOn = settings.getBoolean("SpeakerPhone",false);
+		isSpeakerOn = settings.getBoolean("SpeakerPhone", false);
 		mAudioManager.setSpeakerphoneOn(isSpeakerOn);
+		mMapController.setZoom(settings.getInt("Zoom", mMapView.getMaxZoomLevel()));
+		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, settings.getInt("Volume", mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)), 0);
+
+		String mapvid = settings.getString("pref_map_vid_key", getString(R.string.pref_map_vid_default));
+		mMapView.setSatellite((mapvid.compareTo("Спутник") == 0));
+
 	}
 
 	// ============================ @Overrides ====================================================
@@ -199,14 +192,11 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		MenuInflater inflater = getSupportMenuInflater(); // getSupport.. важно для Sherlock
 		inflater.inflate(R.menu.menu_main, menu);
 		mMenu = menu;
+
+		// Динамик
 		MenuItem speakerMenu = mMenu.findItem(R.id.speaker);
 		speakerMenu.setChecked(isSpeakerOn);
-		// Обновить иконку
-		if (isSpeakerOn)
-			speakerMenu.setIcon(R.drawable.speaker_on);
-		else
-			speakerMenu.setIcon(R.drawable.speaker_off);
-
+		speakerMenu.setIcon(isSpeakerOn ? R.drawable.speaker_on : R.drawable.speaker_off);
 		return true;
 	}
 
@@ -227,16 +217,16 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 				return true;
 			}
 		case (R.id.speaker):
-			mAudioManager.setSpeakerphoneOn(!item.isChecked());
-			if (item.isChecked()) {
-				item.setChecked(false);
-				item.setIcon(R.drawable.speaker_off);
-				return true;
-			} else {
-				item.setChecked(true);
-				item.setIcon(R.drawable.speaker_on);
-				return true;
-			}
+			isSpeakerOn = !item.isChecked(); // новое значение
+			// Новые состояния
+			mAudioManager.setSpeakerphoneOn(isSpeakerOn);// динамик
+			item.setChecked(isSpeakerOn);// MenuItem
+			item.setIcon(isSpeakerOn ? R.drawable.speaker_on : R.drawable.speaker_off);// иконка
+
+			Log.d(LOG, "onOptionMenuSelected");
+			Log.d(LOG, "Приложение isSpeakerOn=" + String.valueOf(isSpeakerOn));
+
+			return true;
 		case (R.id.autoanswer):
 			if (item.isChecked()) {
 				item.setChecked(false);
@@ -262,7 +252,6 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	// ------------------ Navigation Tabs----------------
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		Log.d(LOG, "Page=" + String.valueOf(tab.getPosition()));
 		mViewPager.setCurrentItem(tab.getPosition());
 		if (tab.getPosition() == 0) {
 			mMyLocationOverlay.enableMyLocation();

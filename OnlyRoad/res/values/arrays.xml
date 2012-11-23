@@ -1,6 +1,6 @@
 <resources>
     <string-array name="map_vids">
         <item>Схема</item>
-        <item>Сутник</item>
+        <item>Спутник</item>
     </string-array>
 </resources>

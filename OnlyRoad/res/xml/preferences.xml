@@ -1,9 +1,5 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory 
-        android:title="@string/pref_map_category"
-        android:key="pref_map_cat_key"
-        >
     <ListPreference
        android:key="pref_map_vid_key"
        android:title="@string/pref_map_vid"
@@ -11,9 +7,12 @@
        android:defaultValue="@string/pref_map_vid_default"
        android:entries="@array/map_vids"
        android:entryValues="@array/map_vids"
-       android:dialogTitle="@string/pref_map_vid"
-       
+       android:dialogTitle="@string/pref_map_vid"/>
+    <CheckBoxPreference
+        android:key="pref_gprs_key"
+        android:title="@string/pref_gprs"
+        android:summary="@string/pref_gprs_sum"
+        android:defaultValue="false"
         />
-
-    </PreferenceCategory>
+    
 </PreferenceScreen>

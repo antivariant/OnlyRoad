@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.hardware.Camera;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,7 +25,7 @@ import android.view.WindowManager;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.ActionBar.TabListener;
-import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -37,7 +36,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-public class MainActivity extends SherlockMapActivity implements TabListener, LocationListener, OnPageChangeListener {
+public class MainActivity extends SherlockFragmentActivity implements TabListener, LocationListener, OnPageChangeListener {
 	MapController mMapController;
 	MapView mMapView;
 	ViewPager mViewPager;
@@ -61,7 +60,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		setContentView(R.layout.activity_main);
 		mContext = this;
 
 		// Запомнить состояние динамика и громкости  
@@ -75,7 +74,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		// ---------------- Swipe -------------------------------------------
 		LayoutInflater inflater = LayoutInflater.from(this);
-		final View pageMap = (MapView) inflater.inflate(R.layout.layout_map, null);
+		final View pageMap = findViewById(R.id.fragment_root);
 		final View pagePhone = inflater.inflate(R.layout.layout_phone, null);
 		final View pageVideo = inflater.inflate(R.layout.layout_video, null);
 
@@ -93,7 +92,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		mViewPager.setOnPageChangeListener(this);
 
 		// --------------- Карта ----------------------------------------------------
-		mMapView = (MapView) pageMap.findViewById(R.id.map); // искать View нужно в pageMap
+		mMapView = (MapView) pageMap.findViewById(R.id.mapview); // искать View нужно в pageMap
 		mMapController = mMapView.getController();
 
 		mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -324,18 +323,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		return false;
 	}
 
-	// ----------------------- Камера -----------------------------------------------
-	
-	public static Camera getCameraInstance(){
-	    Camera c = null;    
-	    try {
-	        c = Camera.open(); // получаем экземпляр камеры
-	    }    catch (Exception e){
-	        // Камера недоступна (нет или занята)
 
-	    }
-	    return c; // null если нет или занята
-	}
 	
 	// ========================= Процедуры =================================================
 

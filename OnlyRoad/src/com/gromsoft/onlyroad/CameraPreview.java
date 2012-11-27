@@ -11,21 +11,21 @@ import android.view.SurfaceView;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
-	private SurfaceHolder mHolder; // ����������� ��� ���-�� �����������, ���� ������
+	private SurfaceHolder mHolder; // Контейнер для превью
 	private Camera mCamera;
 	private final static String TAG = "MyLog";
 
-	// �����������
+	// Конструктор
 	public CameraPreview(Context context, Camera camera) {
 		super(context);
 		mCamera = camera;
 		mHolder = getHolder();
 		mHolder.addCallback(this);
-		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // C API 11 (Android 3.0) depricated, ��������� ��� ������������� � ����� ������� ���
+		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // C API 11 (Android 3.0) depricated, ничего не значит
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
-		// ������ �������, �������� ��� ������
+		// Превью подготовлено, стартуем
 		try {
 			mCamera.setPreviewDisplay(holder);
 			mCamera.startPreview();
@@ -39,17 +39,17 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-		// ���� ������ ���������� (��������� ��� ������� ��������), ����� ���������� � ��� ��� ��������� ������
+		// Всегда перед поворотом, ресайзом и т.п.
 		if (mHolder.getSurface() == null) {
-			// ��� ������
+			// нет камеры
 			return;
 		}
-		// ���������� ������ ����� �����������
+		// Остановить перед поворотом
 		try {
 			mCamera.stopPreview();
 		} catch (Exception e) {
 		}
-		// ��� ������� ��� ������ ������� ������ � ����� ���������
+		// Тут всякие обработки
 		try {
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();

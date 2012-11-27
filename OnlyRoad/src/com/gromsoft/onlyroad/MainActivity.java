@@ -8,12 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -54,7 +54,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	boolean isSpeakerOn;
 	boolean isDefaultSpeakerOn;
 	int speakerDefaulValue;
-	public Menu mMenu; // TODO public для теста, не могу никак по-другому получить. Может быть роботиумом isToggleButtonChecked или тест положить в тот же пакет?
+	public Menu mMenu; // TODO public РґР»СЏ С‚РµСЃС‚Р°, РЅРµ РјРѕРіСѓ РЅРёРєР°Рє РїРѕ-РґСЂСѓРіРѕРјСѓ РїРѕР»СѓС‡РёС‚СЊ. РњРѕР¶РµС‚ Р±С‹С‚СЊ СЂРѕР±РѕС‚РёСѓРјРѕРј isToggleButtonChecked РёР»Рё С‚РµСЃС‚ РїРѕР»РѕР¶РёС‚СЊ РІ С‚РѕС‚ Р¶Рµ РїР°РєРµС‚?
 
 	final static String LOG = "MyLog";
 
@@ -64,12 +64,12 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		mContext = this;
 
-		// Запомнить состояние динамика и громкости  
+		// Р—Р°РїРѕРјРЅРёС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ РґРёРЅР°РјРёРєР° Рё РіСЂРѕРјРєРѕСЃС‚Рё  
 		mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-		isDefaultSpeakerOn = mAudioManager.isSpeakerphoneOn();// Запомнить состояние до запуска
+		isDefaultSpeakerOn = mAudioManager.isSpeakerphoneOn();// Р—Р°РїРѕРјРЅРёС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ РґРѕ Р·Р°РїСѓСЃРєР°
 		speakerDefaulValue = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		
-		// Не выключать экран
+		// РќРµ РІС‹РєР»СЋС‡Р°С‚СЊ СЌРєСЂР°РЅ
 		Window w = this.getWindow();
 		w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -88,18 +88,18 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		mViewPager = new ViewPager(this);
 		mViewPager.setAdapter(mMyPagerAdapter);
 		mViewPager.setCurrentItem(0);
-		mViewPager.setOffscreenPageLimit(3); // MapView это тоже типа группа, чтобы он внутри не искал????
+		mViewPager.setOffscreenPageLimit(3);  // MapView СЌС‚Рѕ С‚РѕР¶Рµ С‚РёРїР° РіСЂСѓРїРїР°, С‡С‚РѕР±С‹ РѕРЅ РІРЅСѓС‚СЂРё РЅРµ РёСЃРєР°Р»????
 		setContentView(mViewPager);
 		mViewPager.setOnPageChangeListener(this);
 
-		// --------------- Карта ----------------------------------------------------
-		mMapView = (MapView) pageMap.findViewById(R.id.map); // искать View нужно в pageMap
+		// --------------- РљР°СЂС‚Р° ----------------------------------------------------
+		mMapView = (MapView) pageMap.findViewById(R.id.map); // РёСЃРєР°С‚СЊ View РЅСѓР¶РЅРѕ РІ pageMap
 		mMapController = mMapView.getController();
 
 		mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-		mapOverlays = mMapView.getOverlays();// Получить слои, привязанные к карте
+		mapOverlays = mMapView.getOverlays();// РџРѕР»СѓС‡РёС‚СЊ СЃР»РѕРё, РїСЂРёРІСЏР·Р°РЅРЅС‹Рµ Рє РєР°СЂС‚Рµ
 
 		mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
 		mMyLocationOverlay.enableMyLocation();
@@ -116,9 +116,9 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 		// ---------------- ActionBar ----------------------------------
 		mActionBar = getSupportActionBar();
-		mActionBar.setDisplayHomeAsUpEnabled(true);// Иконка приложения для перехода назад
-		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);// Закладки
-		mActionBar.setDisplayShowTitleEnabled(false);// Не показывать название приложения рядом с иконкой
+		mActionBar.setDisplayHomeAsUpEnabled(true);// РРєРѕРЅРєР° РїСЂРёР»РѕР¶РµРЅРёСЏ РґР»СЏ РїРµСЂРµС…РѕРґР° РЅР°Р·Р°Рґ
+		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);// Р—Р°РєР»Р°РґРєРё
+		mActionBar.setDisplayShowTitleEnabled(false);// РќРµ РїРѕРєР°Р·С‹РІР°С‚СЊ РЅР°Р·РІР°РЅРёРµ РїСЂРёР»РѕР¶РµРЅРёСЏ СЂСЏРґРѕРј СЃ РёРєРѕРЅРєРѕР№
 
 		Tab tab = mActionBar.newTab().setText(R.string.menu_dvr).setTabListener(this);
 		mActionBar.addTab(tab);
@@ -129,12 +129,12 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	}
 
-	// ============================== Конец onCreate =====================================================
+	// ============================== РљРѕРЅРµС† onCreate =====================================================
 
-	// -------- Жизненный цикл --------------------------------------
+	// -------- Р–РёР·РЅРµРЅРЅС‹Р№ С†РёРєР» --------------------------------------
 	@Override
 	protected void onPause() {
-		// TODO Непонятно, мне ведь не нужно останавливать запись, ну чтобы в фоне тоже записывало
+		// TODO РќРµРїРѕРЅСЏС‚РЅРѕ, РјРЅРµ РІРµРґСЊ РЅРµ РЅСѓР¶РЅРѕ РѕСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ Р·Р°РїРёСЃСЊ, РЅСѓ С‡С‚РѕР±С‹ РІ С„РѕРЅРµ С‚РѕР¶Рµ Р·Р°РїРёСЃС‹РІР°Р»Рѕ
 		mLocationManager.removeUpdates(this);
 		mMyLocationOverlay.disableMyLocation();
 
@@ -155,7 +155,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	@Override
 	protected void onDestroy() {
-		// Восстановить состояние динамика и громкости до запуска
+		// Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ РґРёРЅР°РјРёРєР° Рё РіСЂРѕРјРєРѕСЃС‚Рё РґРѕ Р·Р°РїСѓСЃРєР°
 		mAudioManager.setSpeakerphoneOn(isDefaultSpeakerOn);
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, speakerDefaulValue, 0);
 		super.onDestroy();
@@ -180,7 +180,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, settings.getInt("Volume", mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)), 0);
 
 		String mapvid = settings.getString("pref_map_vid_key", getString(R.string.pref_map_vid_default));
-		mMapView.setSatellite((mapvid.compareTo("Спутник") == 0));
+		mMapView.setSatellite((mapvid.compareTo("РЎРїСѓС‚РЅРёРє") == 0));
 
 	}
 
@@ -189,11 +189,11 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 	// ----------------- Action Bar ------------------------------------------
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater(); // getSupport.. важно для Sherlock
+		MenuInflater inflater = getSupportMenuInflater(); // getSupport.. РІР°Р¶РЅРѕ РґР»СЏ Sherlock
 		inflater.inflate(R.menu.menu_main, menu);
 		mMenu = menu;
 
-		// Динамик
+		// Р”РёРЅР°РјРёРє
 		MenuItem speakerMenu = mMenu.findItem(R.id.speaker);
 		speakerMenu.setChecked(isSpeakerOn);
 		speakerMenu.setIcon(isSpeakerOn ? R.drawable.speaker_on : R.drawable.speaker_off);
@@ -217,14 +217,14 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 				return true;
 			}
 		case (R.id.speaker):
-			isSpeakerOn = !item.isChecked(); // новое значение
-			// Новые состояния
-			mAudioManager.setSpeakerphoneOn(isSpeakerOn);// динамик
+			isSpeakerOn = !item.isChecked();  // РЅРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ
+		// РќРѕРІС‹Рµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
+			mAudioManager.setSpeakerphoneOn(isSpeakerOn);// РґРёРЅР°РјРёРє
 			item.setChecked(isSpeakerOn);// MenuItem
-			item.setIcon(isSpeakerOn ? R.drawable.speaker_on : R.drawable.speaker_off);// иконка
+			item.setIcon(isSpeakerOn ? R.drawable.speaker_on : R.drawable.speaker_off);// РёРєРѕРЅРєР°
 
 			Log.d(LOG, "onOptionMenuSelected");
-			Log.d(LOG, "Приложение isSpeakerOn=" + String.valueOf(isSpeakerOn));
+			Log.d(LOG, "РџСЂРёР»РѕР¶РµРЅРёРµ isSpeakerOn=" + String.valueOf(isSpeakerOn));
 
 			return true;
 		case (R.id.autoanswer):
@@ -286,7 +286,7 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 
 	}
 
-	// ---------------------- Карта ------------------------
+	// ---------------------- РљР°СЂС‚Р° ------------------------
 	@Override
 	public void onLocationChanged(Location location) {
 
@@ -301,8 +301,8 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 			mapOverlays.add(mRouteOverlay);
 		}
 
-		OverlayItem cOverlayItem = new OverlayItem(lastLocation, "", "");// Добавляем следующую точку
-		mRouteOverlay.addOverlay(cOverlayItem);// Добавить ее к слою
+		OverlayItem cOverlayItem = new OverlayItem(lastLocation, "", "");// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+		mRouteOverlay.addOverlay(cOverlayItem);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
 		mMapView.postInvalidate();
 
 	}
@@ -324,6 +324,19 @@ public class MainActivity extends SherlockMapActivity implements TabListener, Lo
 		return false;
 	}
 
-	// ========================= Процедуры =================================================
+	// ----------------------- РљР°РјРµСЂР° -----------------------------------------------
+	
+	public static Camera getCameraInstance(){
+	    Camera c = null;    
+	    try {
+	        c = Camera.open(); // РїРѕР»СѓС‡Р°РµРј СЌРєР·РµРјРїР»СЏСЂ РєР°РјРµСЂС‹
+	    }    catch (Exception e){
+	        // РљР°РјРµСЂР° РЅРµРґРѕСЃС‚СѓРїРЅР° (РЅРµС‚ РёР»Рё Р·Р°РЅСЏС‚Р°)
+
+	    }
+	    return c; // null РµСЃР»Рё РЅРµС‚ РёР»Рё Р·Р°РЅСЏС‚Р°
+	}
+	
+	// ========================= РџСЂРѕС†РµРґСѓСЂС‹ =================================================
 
 }

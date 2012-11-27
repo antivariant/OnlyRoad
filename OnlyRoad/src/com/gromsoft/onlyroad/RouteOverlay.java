@@ -13,17 +13,17 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
-//Слой трека с отображением где производилась запись другим цветом
+//РЎР»РѕР№ С‚СЂРµРєР° СЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµРј РіРґРµ РїСЂРѕРёР·РІРѕРґРёР»Р°СЃСЊ Р·Р°РїРёСЃСЊ РґСЂСѓРіРёРј С†РІРµС‚РѕРј
 public class RouteOverlay extends ItemizedOverlay<OverlayItem> {
 
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>(); // Массив элементов слоя
+	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>(); // РњР°СЃСЃРёРІ СЌР»РµРјРµРЅС‚РѕРІ СЃР»РѕСЏ
 	private int color;
 	private boolean recording = false;
 	private int deltaX, deltaY;
 
-	// Конструктор не стандартный, а с контекстом для обработки событий
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РЅРµ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№, Р° СЃ РєРѕРЅС‚РµРєСЃС‚РѕРј РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№
 	public RouteOverlay(Drawable defaultMarker, int color) {
-		super(boundCenterBottom(defaultMarker)); // Основная картинка-маркер для каждого слоя. Центр - снизу посередине
+		super(boundCenterBottom(defaultMarker)); // РћСЃРЅРѕРІРЅР°СЏ РєР°СЂС‚РёРЅРєР°-РјР°СЂРєРµСЂ РґР»СЏ РєР°Р¶РґРѕРіРѕ СЃР»РѕСЏ. Р¦РµРЅС‚СЂ - СЃРЅРёР·Сѓ РїРѕСЃРµСЂРµРґРёРЅРµ
 		this.color = color;
 	}
 
@@ -32,8 +32,8 @@ public class RouteOverlay extends ItemizedOverlay<OverlayItem> {
 	}
 
 	public void addOverlay(OverlayItem item) {
-		mOverlays.add(item);// Добавить в массив элементов
-		populate();// Подготовить к прорисовке элемента, вызывает createItem
+		mOverlays.add(item);// Р”РѕР±Р°РІРёС‚СЊ РІ РјР°СЃСЃРёРІ СЌР»РµРјРµРЅС‚РѕРІ
+		populate();// РџРѕРґРіРѕС‚РѕРІРёС‚СЊ Рє РїСЂРѕСЂРёСЃРѕРІРєРµ СЌР»РµРјРµРЅС‚Р°, РІС‹Р·С‹РІР°РµС‚ createItem
 	}
 
 	public void clearItems() {
@@ -43,12 +43,12 @@ public class RouteOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
 	protected OverlayItem createItem(int overlayIndex) {
 
-		return mOverlays.get(overlayIndex);// populate() должен получить элемент для прорисовки
+		return mOverlays.get(overlayIndex);// populate() РґРѕР»Р¶РµРЅ РїРѕР»СѓС‡РёС‚СЊ СЌР»РµРјРµРЅС‚ РґР»СЏ РїСЂРѕСЂРёСЃРѕРІРєРё
 	}
 
 	@Override
 	public int size() {
-		return mOverlays.size(); // Количество элементов на слое
+		return mOverlays.size(); // РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РЅР° СЃР»РѕРµ
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class RouteOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
 
-		Projection projection = mapView.getProjection();// Конвертер из географических координат в координаты MapView
+		Projection projection = mapView.getProjection();// РљРѕРЅРІРµСЂС‚РµСЂ РёР· РіРµРѕРіСЂР°С„РёС‡РµСЃРєРёС… РєРѕРѕСЂРґРёРЅР°С‚ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹ MapView
 
 		Paint paint = new Paint();
 		paint.setColor(color);
@@ -73,7 +73,7 @@ public class RouteOverlay extends ItemizedOverlay<OverlayItem> {
 
 		int itemNumber = mOverlays.size();
 
-		if (itemNumber > 1) { // первую точку задаем не в локейшн лисенере, а когда создаем слой
+		if (itemNumber > 1) {  // РїРµСЂРІСѓСЋ С‚РѕС‡РєСѓ Р·Р°РґР°РµРј РЅРµ РІ Р»РѕРєРµР№С€РЅ Р»РёСЃРµРЅРµСЂРµ, Р° РєРѕРіРґР° СЃРѕР·РґР°РµРј СЃР»РѕР№
 			for (int i = 1; i < itemNumber; i++) {
 
 				gp1 = mOverlays.get(i - 1).getPoint();
@@ -82,8 +82,8 @@ public class RouteOverlay extends ItemizedOverlay<OverlayItem> {
 				projection.toPixels(gp1, point1);
 				projection.toPixels(gp2, point2);
 
-				// TODO попробовать добавлять точки в массив (они еще понадобятся для сохранения видео), а тут только транслировать в координаты
-				// MapView и выводить потом пачкой линий canvas.drawLines(массив, паинт)
+				// TODO РїРѕРїСЂРѕР±РѕРІР°С‚СЊ РґРѕР±Р°РІР»СЏС‚СЊ С‚РѕС‡РєРё РІ РјР°СЃСЃРёРІ (РѕРЅРё РµС‰Рµ РїРѕРЅР°РґРѕР±СЏС‚СЃСЏ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РІРёРґРµРѕ), Р° С‚СѓС‚ С‚РѕР»СЊРєРѕ С‚СЂР°РЅСЃР»РёСЂРѕРІР°С‚СЊ РІ РєРѕРѕСЂРґРёРЅР°С‚С‹
+				// MapView Рё РІС‹РІРѕРґРёС‚СЊ РїРѕС‚РѕРј РїР°С‡РєРѕР№ Р»РёРЅРёР№ canvas.drawLines(РјР°СЃСЃРёРІ, РїР°РёРЅС‚)
 				if(recording)canvas.drawLine(point1.x, point1.y, point2.x, point2.y, paint);
 			}
 		}

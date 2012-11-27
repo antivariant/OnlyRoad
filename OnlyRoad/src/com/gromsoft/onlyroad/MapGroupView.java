@@ -25,7 +25,7 @@ public class MapGroupView extends ViewGroup {
 
 	
 	@Override
-	//Расположение потомков ViewGroup
+	//Р Р°СЃРїРѕР»РѕР¶РµРЅРёРµ РїРѕС‚РѕРјРєРѕРІ ViewGroup
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int width = getWidth();
         final int height = getHeight();

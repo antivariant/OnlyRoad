@@ -51,7 +51,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		settings = mMainActivity.getPreferences(0);
 		mMenu = mMainActivity.mMenu;
 		speakerMenuItem = mMenu.findItem(com.gromsoft.onlyroad.R.id.speaker);
-		mSolo.setActivityOrientation(Solo.LANDSCAPE);// Îñíîâíàÿ îðèåíòàöèÿ ïðèëîæåíèÿ
+		mSolo.setActivityOrientation(Solo.LANDSCAPE);// // ÐžÑÐ½Ð¾Ð²Ð½Ð°Ñ Ð¾Ñ€Ð¸ÐµÐ½Ñ‚Ð°Ñ†Ð¸Ñ Ð¿Ñ€Ð¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ
 
 	}
 
@@ -62,25 +62,25 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	@SmallTest
 	public void testActionBarNavigationMode() {
 		mSolo.setActivityOrientation(Solo.LANDSCAPE);
-		assertEquals("Landscape. Òàáû äîëæíû áûòü â ðÿä", ActionBar.NAVIGATION_MODE_TABS, mActionBar.getNavigationMode());
+		assertEquals("Landscape. Ð¢Ð°Ð±Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð±Ñ‹Ñ‚ÑŒ Ð² Ñ€ÑÐ´", ActionBar.NAVIGATION_MODE_TABS, mActionBar.getNavigationMode());
 		mSolo.setActivityOrientation(Solo.PORTRAIT);
-		assertEquals("Portrait. Òàáû äîëæíû áûòü â ðÿä", ActionBar.NAVIGATION_MODE_TABS, mActionBar.getNavigationMode());	
+		assertEquals("Portrait. Portrait. Ð¢Ð°Ð±Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð±Ñ‹Ñ‚ÑŒ Ð² Ñ€ÑÐ´", ActionBar.NAVIGATION_MODE_TABS, mActionBar.getNavigationMode());	
 		mSolo.setActivityOrientation(Solo.LANDSCAPE);
 	}
 
 	@SmallTest
 	public void testSavedState() throws Exception {
-		// Ïðîâåðêà ñîõðàíåííîãî çíà÷åíèÿ
-		CheckSpeakerSavedState("Äî ïåðåçàãðóçêè");
+		// ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð½Ð¾Ð³Ð¾ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ
+		CheckSpeakerSavedState("Ð”Ð¾ Ð¿ÐµÑ€ÐµÐ·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸");
 
-		// Ïåðåêëþ÷àåì è ïåðåçàãðóæàåì
+		// ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Ð¸ Ð¿ÐµÑ€ÐµÐ·Ð°Ð³Ñ€ÑƒÐ¶Ð°ÐµÐ¼
 		mSolo.clickOnImageButton(1);
 		mMainActivity.finish();
 		this.tearDown();
 		this.setUp();
 
-		//Ïðîâåðêà ïîñëå ïåðåçàãðóçêè
-		CheckSpeakerSavedState("Ïîñëå ïåðåçàãðóçêè");
+		//ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð¿Ð¾ÑÐ»Ðµ Ð¿ÐµÑ€ÐµÐ·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸
+		CheckSpeakerSavedState("ÐŸÐ¾ÑÐ»Ðµ Ð¿ÐµÑ€ÐµÐ·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸");
 	}
 
 	private void CheckSpeakerSavedState(String test) {
@@ -89,8 +89,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		boolean speaker_menu = speakerMenuItem.isChecked();
 		boolean isSpeakerOn = mAudioManager.isSpeakerphoneOn();
 
-		assertEquals(test + ". Ñîõðàíåíî çíà÷åíèå äèíàìèêà " + String.valueOf(speaker_settings) + ", ìåíþ ", speaker_settings, speaker_menu);
-		assertEquals(test + ". Íå ïåðåêëþ÷èëñÿ äèíàìèê, â ìåíþ " + String.valueOf(speaker_settings), speaker_settings, isSpeakerOn);
+		assertEquals(test + ". Ð¡Ð¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¾ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð´Ð¸Ð½Ð°Ð¼Ð¸ÐºÐ°  " + String.valueOf(speaker_settings) + ", Ð¼ÐµÐ½ÑŽ  ", speaker_settings, speaker_menu);
+		assertEquals(test + ". ÐÐµ Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð¸Ð»ÑÑ Ð´Ð¸Ð½Ð°Ð¼Ð¸Ðº, Ð² Ð¼ÐµÐ½ÑŽ  " + String.valueOf(speaker_settings), speaker_settings, isSpeakerOn);
 		
 
 	}
@@ -100,28 +100,28 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
 		// ---- LANDSCAPE ------
 		mSolo.setActivityOrientation(Solo.LANDSCAPE);
-		// Ïðîâåðêà âêëþ÷åíèÿ/âûêëþ÷åíèÿ
-		Log.d(LOG, "testSpeakerphone íà÷àëüíîå çíà÷åíèå");
-		CheckSpeakerState(speakerMenuItem);// Íà÷àëüíîå çíà÷åíèå
-		mSolo.clickOnImageButton(1);// Âêë (èëè âûêë)
-		Log.d(LOG, "testSpeakerphone ïûöíóë ðàç");
+		// ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ/Ð²Ñ‹ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ
+		Log.d(LOG, "testSpeakerphone Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ");
+		CheckSpeakerState(speakerMenuItem);// ÐÐ°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ
+		mSolo.clickOnImageButton(1);//  Ð’ÐºÐ» (Ð¸Ð»Ð¸ Ð²Ñ‹ÐºÐ»)
+		Log.d(LOG, "testSpeakerphone Ð¿Ñ‹Ñ†Ð½ÑƒÐ» Ñ€Ð°Ð·");
 		CheckSpeakerState(speakerMenuItem);
-		mSolo.clickOnImageButton(1);// Âûêë (èëè âêë)
-		Log.d(LOG, "testSpeakerphone ïûöíóë äâà");
+		mSolo.clickOnImageButton(1);// Ð’Ñ‹ÐºÐ» (Ð¸Ð»Ð¸ Ð²ÐºÐ»)
+		Log.d(LOG, "testSpeakerphone Ð¿Ñ‹Ñ†Ð½ÑƒÐ» Ð´Ð²Ð°");
 		CheckSpeakerState(speakerMenuItem);
 
 		
 		// ---- PORTRAIT ----------
 		mSolo.setActivityOrientation(Solo.PORTRAIT);
-		Log.d(LOG, "testSpeakerphone ïåðåâåðíóë");
-		// Ïðîâåðêà âêëþ÷åíèÿ/âûêëþ÷åíèÿ
-		CheckSpeakerState(speakerMenuItem);// Íà÷àëüíîå çíà÷åíèå
-		mSolo.clickOnImageButton(1);// Âêë (èëè âûêë)
+		Log.d(LOG, "testSpeakerphone Ð¿ÐµÑ€ÐµÐ²ÐµÑ€Ð½ÑƒÐ»");
+		// ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ/Ð²Ñ‹ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ
+		CheckSpeakerState(speakerMenuItem);// ÐÐ°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ
+		mSolo.clickOnImageButton(1);// Ð’ÐºÐ» (Ð¸Ð»Ð¸ Ð²Ñ‹ÐºÐ»)
 //		mSolo.waitForActivity("mMainActivity");
-//		Log.d(LOG, "testSpeakerphone ïûöíóë òðè");
+//		Log.d(LOG, "testSpeakerphone Ð¿Ñ‹Ñ†Ð½ÑƒÐ» Ñ‚Ñ€Ð¸");
 //		CheckSpeakerState(speakerMenuItem);
-//		mSolo.clickOnImageButton(1);// Âûêë (èëè âêë)
-//		Log.d(LOG, "testSpeakerphone ïûöíóë ÷åòûðå");
+//		mSolo.clickOnImageButton(1);// Ð’Ñ‹ÐºÐ» (Ð¸Ð»Ð¸ Ð²ÐºÐ»)
+//		Log.d(LOG, "testSpeakerphone Ð¿Ñ‹Ñ†Ð½ÑƒÐ» Ñ‡ÐµÑ‚Ñ‹Ñ€Ðµ");
 //		CheckSpeakerState(speakerMenuItem);
 		mSolo.setActivityOrientation(Solo.LANDSCAPE);
 
@@ -134,7 +134,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		Log.d(LOG, "Test isChecked=" + String.valueOf(isChecked));
 		Log.d(LOG, "Test isSpeakerOn=" + String.valueOf(isSpeakerOn));
 		
-		assertEquals("Ìåíþ äèíàìèêà " + String.valueOf(isChecked) + ", ñïèêåð ", isChecked, isSpeakerOn);
+		assertEquals("ÐœÐµÐ½ÑŽ Ð´Ð¸Ð½Ð°Ð¼Ð¸ÐºÐ° " + String.valueOf(isChecked) + ", ÑÐ¿Ð¸ÐºÐµÑ€  ", isChecked, isSpeakerOn);
 	}
 
 }

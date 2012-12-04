@@ -300,8 +300,8 @@ public class MainActivity extends SherlockFragmentActivity implements TabListene
 			mapOverlays.add(mRouteOverlay);
 		}
 
-		OverlayItem cOverlayItem = new OverlayItem(lastLocation, "", "");// ��������� ��������� �����
-		mRouteOverlay.addOverlay(cOverlayItem);// �������� �� � ����
+		OverlayItem cOverlayItem = new OverlayItem(lastLocation, "", "");// слой с myLocation
+		mRouteOverlay.addOverlay(cOverlayItem);// добавить к слоям карты
 		mMapView.postInvalidate();
 
 	}

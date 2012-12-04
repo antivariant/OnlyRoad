@@ -1,24 +1,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:id="@+id/fragment_root">
+    android:layout_height="match_parent" >
 
-<fragment 
-    android:id="@+id/map_place"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:name="com.gromsoft.onlyroad.MapFragment">
-</fragment>
-    
-<fragment 
-    android:id="@+id/camera_place"
-    android:layout_alignLeft="@id/map_place"
-    android:layout_alignBottom="@id/map_place"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:name="com.gromsoft.onlyroad.CameraFragment">
-    
-</fragment>
+    <fragment
+        android:id="@+id/map_place"
+        android:name="com.gromsoft.onlyroad.MapFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/camera_place"
+        android:name="com.gromsoft.onlyroad.CameraFragment"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@id/map_place"
+        android:layout_alignLeft="@id/map_place" >
+    </fragment>
 
 </RelativeLayout>
